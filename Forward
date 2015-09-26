@@ -1,0 +1,41 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package webdata;
+import java.util.*;
+import java.lang.reflect.*;
+/**
+ *
+ * @author Jeremy
+ */
+public class Forward {
+    Method target = null;
+    Object current = null;
+    Object[] arguments = null;
+    
+    public Forward(){}
+        public Forward(Object cur,String meth){
+            setNewMethod(cur, meth);
+    }
+        public void setNewMethod(Object cur,String methodName){
+            current = cur;
+            arguments = new Object[]{};
+                    try{
+                        target = (current.getClass()).getDeclaredMethod(methodName, new Class[] {});
+                    }
+                    catch(NoSuchMethodException nsme) {}
+        catch(SecurityException se) {}
+        }
+        public Object connect() {
+        Object obj = null;
+        try {
+            obj = target.invoke(current, arguments);
+        }
+        catch(IllegalAccessException iae) {}
+        catch(IllegalArgumentException ire) {}
+        catch(InvocationTargetException e) {}
+        return obj;
+    }
+}
