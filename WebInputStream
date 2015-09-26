@@ -1,0 +1,42 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package webdata;
+
+/**
+ *
+ * @author Jeremy
+ */
+import java.io.*;
+import java.net.*;
+
+public class WebInputStream {
+    URL definedURL = null;
+    InputStream IS = null;
+
+    public WebInputStream() {
+    }
+
+    
+
+    public WebInputStream(String title) throws IOException {
+       getInputStream(title);; //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public InputStream getCurrentStream() {
+        return IS;
+    }
+
+    public InputStream getInputStream(String title) throws MalformedURLException, IOException {
+        definedURL = null;
+        try {
+            definedURL = new URL(title);
+            IS = definedURL.openStream();
+            System.out.println("URL Successful");
+        }
+        catch(MalformedURLException e) {}
+        return IS;
+    }
+}
