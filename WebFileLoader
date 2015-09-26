@@ -1,0 +1,147 @@
+package webdata;
+
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+/**
+ *
+ * @author Jeremy
+ */
+import java.io.*;
+import java.net.*;
+
+public class WebFileLoader implements Runnable {
+    Thread mainT = null;
+    boolean jobIsDone = true;
+    boolean isSafe = true;
+    InputStream fis = null;
+    Forward evoker = null;
+
+    String loaded = "";
+    byte[] array = new byte[100000];
+
+    public WebFileLoader() {}
+
+    public void start() {
+        if(mainT == null) {
+            mainT = new Thread(this);
+            jobIsDone = false;
+            mainT.start();
+        }
+    }
+
+    public void stop() {
+        if(mainT != null) {
+            jobIsDone = true;
+            close();
+            mainT = null;
+        }
+    }
+
+    public void open(String title) {
+        isSafe = false;
+        try {
+            WebInputStream web = new WebInputStream(title);
+            fis = web.getCurrentStream();
+            isSafe = true;
+        }
+        catch(MalformedURLException murl) {
+            System.out.println("URL Misformed");
+            stop();
+        }
+        catch(IOException iox) {
+            System.out.println("Fire IO-open Error");
+            stop();
+        }
+    }
+
+    public void close() {
+        if(fis != null) {
+            try {
+                fis.close();
+                fis = null;
+            }
+            catch(IOException iox) {
+                System.out.println("Fire IO-close Error");
+            }
+        }
+    }
+
+    public void pause(int delay) {
+        try { mainT.sleep(delay); }
+        catch(InterruptedException iex) {}
+    }
+
+    public long size() {
+        long len = 0;
+        try {
+            len = fis.available();
+        }
+        catch(IOException iox) {
+            System.out.println("Fire IO-size Error");
+        }
+        return len;
+    }
+
+    public void skip(long len) {
+        try {
+            fis.skip(len);
+        }
+        catch(IOException iox) {
+            System.out.println("Fire IO-skip Error");
+        }
+    }
+
+    public void prepareData(Forward evoker, String title) {
+        this.evoker = evoker;
+        load(title);
+    }
+
+    public void load(String title) {
+        reset();
+        start();
+
+        if(mainT != null) high(title);
+    }
+
+    public void reset() {
+        loaded = "";
+    }
+
+    public void run() {
+        if(!jobIsDone) {
+
+            /* Start entering interesting code here */
+
+        }
+    }
+
+    public void high(String title) {
+        open(title);
+
+        if(isSafe) {
+            try {
+                int held = 0;
+                while(!jobIsDone) {
+                    if((held = fis.read(array)) != -1) {
+                        loaded += new String(array, 0, held);
+                        pause(5);
+                    }
+                    else break;
+                }
+            }
+            catch(IOException iox) {
+                System.out.println("Fire IO-runsFromMain Error");
+            }
+            catch(OutOfMemoryError oom) {
+                System.out.println("Too much data to preload");
+            }
+
+            stop();
+        }
+        if(evoker != null) evoker.connect();
+    }
+}
