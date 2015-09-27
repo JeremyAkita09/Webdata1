@@ -28,10 +28,12 @@ The program works in a four step process.
 ## Installation
 
 *Installation Guide Here (Include Dependancies List)*
+*Install as you would normally install in java ide*
 
 ## Usage
 
 *List format data should be input in, where configuration files are located and how they can be configured (consider giving working example)*
+*The format data should urls(string type) so it can excate information *
 
 The files for WebData program are :
     WebInputStream.java - input for urls
@@ -45,3 +47,4 @@ The files for WebData program are :
 ## Intergrations
 
 *If there are plans to intergrate with any other services (outlook for reports, ELK for search indexing, etc) list them here, also create issues for them and reference their IDs here.*
+*Plans to intergration into Google apis e.g. youtube api*
